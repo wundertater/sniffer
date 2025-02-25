@@ -12,9 +12,9 @@ ftp_data_queue = queue.Queue()
 other_queue = queue.Queue()
 
 # Определение обработчиков в отдельных потоках
-ftp_control_thread = threading.Thread(target=ftp_control_handler, args=(ftp_control_queue,))
-ftp_data_thread = threading.Thread(target=ftp_data_handler, args=(ftp_data_queue,))
-other_thread = threading.Thread(target=other_handler, args=(other_queue,))
+ftp_control_thread = threading.Thread(target=ftp_control_handler, args=(ftp_control_queue,), daemon=True)
+ftp_data_thread = threading.Thread(target=ftp_data_handler, args=(ftp_data_queue,), daemon=True)
+other_thread = threading.Thread(target=other_handler, args=(other_queue,), daemon=True)
 
 ftp_control_thread.start()
 ftp_data_thread.start()
@@ -45,5 +45,4 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description="Сниффер и распределитель данных.")
     arg_parser.add_argument("EthX", type=str, help="Имя сетевого интерфейса.")
     args = arg_parser.parse_args()
-
     sniff(iface=args.EthX, prn=packet_distribution, store=False)
